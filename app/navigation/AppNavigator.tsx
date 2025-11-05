@@ -9,6 +9,7 @@ import ServiceDetailScreen from '../screens/ServiceDetailScreen';
 import ContactScreen from '../screens/ContactScreen';
 import AboutScreen from '../screens/AboutScreen';
 import ConsultationScreen from '../screens/ConsultationScreen';
+import ThankYouScreen from '../screens/ThankYouScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 // Service Screens
 import WebAppScreen from '../screens/WebAppScreen';
@@ -93,6 +94,11 @@ export default function AppNavigator() {
               },
               headerTintColor: '#FFFFFF',
             }}
+          />
+          <Stack.Screen
+            name="ThankYou"
+            component={ThankYouScreen}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="Settings"

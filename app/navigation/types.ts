@@ -2,6 +2,7 @@ export type RootStackParamList = {
   // Brand Screens
   Home: undefined;
   Consultation: undefined;
+  ThankYou: undefined;
   About: undefined;
   Contact: undefined;
   Settings: undefined;

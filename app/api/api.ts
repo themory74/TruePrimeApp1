@@ -1,37 +1,35 @@
-// ===============================================
-// ✅ api.ts — Centralized API helper for TruePrimeApp1
-// ===============================================
+// ===========================================
+// 🌐 TRUE PRIME DIGITAL - LIVE BACKEND CONNECTION
+// ===========================================
 
-const BASE_URL = "https://consultation-backend-oz6l.onrender.com";
+const BASE_URL = "https://consultation-backend-org6.onrender.com"; // ✅ Render backend URL
 
-interface ConsultationData {
+export const sendConsultation = async (data: {
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
   message: string;
-}
-
-interface ConsultationResponse {
-  success: boolean;
-  message?: string;
-  error?: string;
-}
-
-// Send consultation message to backend
-export async function sendConsultation(data: ConsultationData): Promise<ConsultationResponse> {
+}) => {
   try {
+    console.log("🚀 Sending consultation data to backend:", data);
+
     const response = await fetch(`${BASE_URL}/send-message`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
-    console.log("✅ Consultation sent successfully:", result);
+    if (!response.ok) {
+      // Surface HTTP errors clearly for the UI
+      const text = await response.text().catch(() => "");
+      throw new Error(`Backend responded with ${response.status} ${response.statusText}${text ? ` — ${text}` : ""}`);
+    }
+
+    const result = await response.json().catch(() => ({}));
+    console.log("✅ API Response:", result);
     return result;
   } catch (error) {
-    console.error("❌ Consultation submission failed:", error);
+    console.error("❌ API Error:", error);
     throw error;
   }
-}
-
+};

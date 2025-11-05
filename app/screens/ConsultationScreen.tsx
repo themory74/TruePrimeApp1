@@ -47,11 +47,11 @@ export default function ConsultationScreen() {
       console.log("📥 Backend response:", response);
 
       if (response.success) {
-        Alert.alert("✅ Success", response.message || "Your consultation request has been sent!");
         setFullName("");
         setEmail("");
         setPhone("");
         setMessage("");
+        navigation.navigate("ThankYou"); // 👈 Navigate to new screen
       } else {
         throw new Error(response.error || "Message failed to send.");
       }
