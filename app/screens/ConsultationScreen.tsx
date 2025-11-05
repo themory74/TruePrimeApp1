@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { sendConsultation } from "../api/api";
 
 export default function ConsultationScreen() {
   const navigation: any = useNavigation();
@@ -24,12 +25,6 @@ export default function ConsultationScreen() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Backend URL
-  const API_URL =
-    Platform.OS === "android"
-      ? "http://10.0.0.142:5001"
-      : "http://localhost:5001";
-
   // ✅ Submit form
   const handleSubmit = async () => {
     if (!fullName.trim() || !email.trim() || !message.trim()) {
@@ -39,38 +34,33 @@ export default function ConsultationScreen() {
 
     try {
       setLoading(true);
-      console.log("🔗 Connecting to backend...", `${API_URL}/send-message`);
+      console.log("🔗 Connecting to Render backend...");
 
-      // ✅ Send clean structured data
-      const response = await fetch(`${API_URL}/send-message`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fullName.trim(),
-          email: email.trim(),
-          phone: phone.trim() || "Not provided",
-          message: message.trim(),
-        }),
+      // ✅ Send clean structured data using centralized API helper
+      const response = await sendConsultation({
+        name: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim() || "Not provided",
+        message: message.trim(),
       });
 
-      const data = await response.json();
-      console.log("📥 Backend response:", data);
+      console.log("📥 Backend response:", response);
 
-      if (response.ok && data.success) {
-        Alert.alert("✅ Success", data.message || "Your consultation request has been sent!");
+      if (response.success) {
+        Alert.alert("✅ Success", response.message || "Your consultation request has been sent!");
         setFullName("");
         setEmail("");
         setPhone("");
         setMessage("");
       } else {
-        throw new Error(data.error || "Message failed to send.");
+        throw new Error(response.error || "Message failed to send.");
       }
     } catch (error: any) {
       console.error("❌ Send failed:", error);
       const msg =
         error.message?.includes("Network request failed") ||
         error.message?.includes("Failed to fetch")
-          ? "Cannot connect to backend. Please ensure the server is running."
+          ? "Cannot connect to backend. Please check your internet connection."
           : error.message || "Something went wrong. Please try again.";
       Alert.alert("❌ Error", msg);
     } finally {
