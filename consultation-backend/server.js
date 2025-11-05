@@ -1,5 +1,5 @@
 // ==========================================
-// 🚀 TRUE PRIME DIGITAL BACKEND (FINAL VERIFIED + PHONE UPDATE)
+// 🚀 TRUE PRIME DIGITAL BACKEND (RENDER FINAL VERIFIED)
 // ==========================================
 import express from "express";
 import cors from "cors";
@@ -8,11 +8,15 @@ import mongoose from "mongoose";
 import SibApiV3Sdk from "sib-api-v3-sdk";
 import Consultation from "./models/Consultation.js"; // ✅ MongoDB model
 
+// -------------------------
+// 🧩 Config
+// -------------------------
 dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 5001;
 
 // -------------------------
-// 🔧 Middleware Setup
+// 🔧 Middleware
 // -------------------------
 app.use(cors());
 app.use(express.json());
@@ -21,12 +25,12 @@ app.use(express.json());
 // ⚙️ MongoDB Connection
 // -------------------------
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err.message));
 
 // -------------------------
-// 📬 Brevo API Setup
+// 📬 Brevo (Sendinblue) Setup
 // -------------------------
 const brevoClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = brevoClient.authentications["api-key"];
@@ -50,12 +54,10 @@ app.post("/send-message", async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
 
-    // ✅ Validation
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, error: "All fields are required." });
     }
 
-    // ✅ Save to MongoDB
     const newConsultation = new Consultation({
       fullName: name,
       emailAddress: email,
@@ -63,9 +65,8 @@ app.post("/send-message", async (req, res) => {
       message,
     });
     await newConsultation.save();
-    console.log("💾 Saved consultation to MongoDB:", name, email);
+    console.log("💾 Saved consultation:", name, email);
 
-    // ✅ Prepare and send Brevo transactional email
     const sendSmtpEmail = {
       sender: { name: "True Prime Digital", email: process.env.SENDER_EMAIL },
       to: [{ email: process.env.RECEIVER_EMAIL }],
@@ -85,17 +86,10 @@ app.post("/send-message", async (req, res) => {
     await brevoApi.sendTransacEmail(sendSmtpEmail);
     console.log("✅ Email successfully sent via Brevo API");
 
-    // ✅ Response to frontend
-    return res.status(200).json({
-      success: true,
-      message: "✅ Message sent and saved successfully!",
-    });
+    res.status(200).json({ success: true, message: "✅ Message sent and saved successfully!" });
   } catch (err) {
     console.error("❌ Send/Save failed:", err.message);
-    return res.status(500).json({
-      success: false,
-      error: "Message failed to send or save.",
-    });
+    res.status(500).json({ success: false, error: "Message failed to send or save." });
   }
 });
 
@@ -103,11 +97,12 @@ app.post("/send-message", async (req, res) => {
 // 🌍 Root Route
 // -------------------------
 app.get("/", (req, res) => {
-  res.send("✅ True Prime Digital Backend Running");
+  res.send("✅ True Prime Digital Backend is LIVE on Render!");
 });
 
 // -------------------------
-// 🚀 Start Server
+// 🚀 Server Start
 // -------------------------
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
