@@ -2,7 +2,7 @@
 // 🌐 TRUE PRIME DIGITAL - LIVE BACKEND CONNECTION
 // ===========================================
 
-const BASE_URL = "https://consultation-backend-org6.onrender.com"; // ✅ Render backend URL
+const BASE_URL = "https://consultation-backend-oz6f.onrender.com"; // ✅ Render backend URL
 
 export const sendConsultation = async (data: {
   name: string;
