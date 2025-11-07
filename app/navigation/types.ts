@@ -1,5 +1,6 @@
 export type RootStackParamList = {
   // Brand Screens
+  Splash: undefined;
   Home: undefined;
   Consultation: undefined;
   ThankYou: undefined;

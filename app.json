@@ -1,4 +1,23 @@
 {
   "name": "TruePrimeApp",
-  "displayName": "TruePrimeApp"
+  "displayName": "True Prime Digital",
+  "expo": {
+    "name": "TruePrimeApp",
+    "slug": "TruePrimeApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/icons/trueprime_logo.png",
+    "splash": {
+      "image": "./app/assets/icons/trueprime_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0F2C"
+    },
+    "ios": {
+      "bundleIdentifier": "com.trueprime.digital",
+      "supportsTablet": true
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
 }
